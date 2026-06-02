@@ -37,11 +37,11 @@ export default function ProductModal({ product, onClose, onAddToCart }: ProductM
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
       {/* Container Card */}
       <div
         id={`product-modal-${product.id}`}
-        className="relative w-full max-w-4xl border border-neutral-800 bg-[#080808] text-white overflow-hidden p-0 sm:grid sm:grid-cols-2 lg:rounded-2xl shrink-0"
+        className="relative w-full max-w-4xl max-h-[90vh] border border-neutral-800 bg-[#080808] text-white overflow-y-auto sm:overflow-hidden p-0 flex flex-col sm:grid sm:grid-cols-2 rounded-2xl shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}

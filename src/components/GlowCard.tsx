@@ -40,18 +40,13 @@ const GlowCard: React.FC<GlowCardProps> = ({
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const [isTouchDevice, setIsTouchDevice] = React.useState(false);
 
   useEffect(() => {
-    // Detect touch-capable devices to immediately skip document pointer tracking
+    // Detect touch-capable devices to immediately skip document pointer tracking and optimize layout
     const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    setIsTouchDevice(isTouch);
     if (isTouch) {
-      if (cardRef.current) {
-        // Set an elegant static glow highlight on touch/mobile screens with zero passive CPU footprint
-        cardRef.current.style.setProperty('--x', '150');
-        cardRef.current.style.setProperty('--xp', '0.5');
-        cardRef.current.style.setProperty('--y', '150');
-        cardRef.current.style.setProperty('--yp', '0.5');
-      }
       return;
     }
 
@@ -79,6 +74,40 @@ const GlowCard: React.FC<GlowCardProps> = ({
     }
     return sizeMap[size];
   };
+
+  // Skip complex gradient configurations and masking on mobile for extreme performance
+  if (isTouchDevice) {
+    const sizeClasses = getSizeClasses();
+    const touchInlineStyle: React.CSSProperties = {
+      backgroundColor: '#0d0d0d',
+      border: '1.5px solid #141414',
+      borderRadius: '12px',
+      position: 'relative' as const,
+      touchAction: 'pan-y' as const,
+    };
+    if (width !== undefined) {
+      touchInlineStyle.width = typeof width === 'number' ? `${width}px` : width;
+    }
+    if (height !== undefined) {
+      touchInlineStyle.height = typeof height === 'number' ? `${height}px` : height;
+    }
+
+    return (
+      <div
+        id={id}
+        onClick={onClick}
+        style={touchInlineStyle}
+        className={`
+          ${sizeClasses}
+          transition-all duration-300
+          active:scale-[0.98] active:bg-[#121212]
+          ${className}
+        `}
+      >
+        {children}
+      </div>
+    );
+  }
 
   const getInlineStyles = () => {
     const baseStyles = {

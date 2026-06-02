@@ -135,12 +135,13 @@ export function ShadowOverlay({
                 style={{
                     position: "absolute",
                     inset: isTouchDevice ? "-10%" : -displacementScale,
-                    filter: animationEnabled ? `url(#${id}) blur(4px)` : "blur(40px)",
-                    opacity: isTouchDevice ? 0.6 : 1,
+                    filter: isTouchDevice ? "none" : (animationEnabled ? `url(#${id}) blur(4px)` : "blur(40px)"),
+                    opacity: isTouchDevice ? 0.35 : 1,
                     width: isTouchDevice ? "120%" : "100%",
                     height: isTouchDevice ? "120%" : "100%",
                     animation: isTouchDevice ? "mobileFloatShadow 30s ease-in-out infinite alternate" : "none",
                     willChange: isTouchDevice ? "transform" : "auto",
+                    background: isTouchDevice ? `radial-gradient(circle at 50% 50%, ${color || 'rgba(255,255,255,0.1)'} 0%, transparent 60%)` : "none"
                 }}
             >
                 {animationEnabled && (
@@ -182,17 +183,19 @@ export function ShadowOverlay({
                         </defs>
                     </svg>
                 )}
-                <div
-                    style={{
-                        backgroundColor: color,
-                        maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
-                        maskSize: sizing === "stretch" ? "100% 100%" : "cover",
-                        maskRepeat: "no-repeat",
-                        maskPosition: "center",
-                        width: "100%",
-                        height: "100%"
-                    }}
-                />
+                {!isTouchDevice && (
+                    <div
+                        style={{
+                            backgroundColor: color,
+                            maskImage: `url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png')`,
+                            maskSize: sizing === "stretch" ? "100% 100%" : "cover",
+                            maskRepeat: "no-repeat",
+                            maskPosition: "center",
+                            width: "100%",
+                            height: "100%"
+                        }}
+                    />
+                )}
             </div>
 
             {children && (

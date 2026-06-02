@@ -16,12 +16,19 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
   const innerTextRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   const mousePos = useRef({ x: 0, y: 0 });
   const currentPos = useRef({ x: 0, y: 0 });
   const animationFrameRef = useRef<number>();
 
   useEffect(() => {
+    const checkMobile = window.matchMedia('(pointer: coarse)').matches || 
+                        ('ontouchstart' in window) || 
+                        (navigator.maxTouchPoints > 0);
+    setIsTouchDevice(checkMobile);
+    if (checkMobile) return;
+
     const updateSize = () => {
       if (containerRef.current) {
         setContainerSize({
@@ -36,6 +43,7 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
   }, []);
 
   useEffect(() => {
+    if (isTouchDevice) return;
     if (!isHovered) {
       if (circleRef.current) {
         circleRef.current.style.transform = "";
@@ -67,18 +75,20 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
     return () => {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [isHovered]);
+  }, [isHovered, isTouchDevice]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouchDevice) return;
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     mousePos.current = {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     };
-  }, []);
+  }, [isTouchDevice]);
 
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouchDevice) return;
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -86,11 +96,20 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
     mousePos.current = { x, y };
     currentPos.current = { x, y };
     setIsHovered(true);
-  }, []);
+  }, [isTouchDevice]);
 
   const handleMouseLeave = useCallback(() => {
+    if (isTouchDevice) return;
     setIsHovered(false);
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) {
+    return (
+      <div className={cn("relative inline-flex items-center justify-center select-none", className)}>
+        <span className="text-4xl sm:text-5xl font-black tracking-tighter text-white uppercase">{text}</span>
+      </div>
+    );
+  }
 
   return (
     <div
