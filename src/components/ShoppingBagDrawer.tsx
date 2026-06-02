@@ -83,7 +83,7 @@ export default function ShoppingBagDrawer({
 
       message += `*${index + 1}. ${item.product.name}*\n`;
       message += `   • Marca: ${item.product.brand}\n`;
-      message += `   • Tam: ${item.selectedSize} | Cor: ${item.selectedColor.name}\n`;
+      message += `   • Tam: ${item.selectedSize || 'Único'} | Cor: ${item.selectedColor?.name || 'Padrão'}\n`;
       message += `   • Qtd: ${item.quantity}x de R$ ${item.product.price.toFixed(2)}\n`;
       message += `   • Valor: ${formattedItemTotal}\n\n`;
     });
@@ -176,7 +176,7 @@ export default function ShoppingBagDrawer({
                         {item.product.name}
                       </h4>
                       <p className="mt-1 font-mono text-[9px] text-neutral-400 uppercase">
-                        Tam: {item.selectedSize} | Cor: {item.selectedColor.name.split(' ')[0]}
+                        Tam: {item.selectedSize || 'Único'} | Cor: {item.selectedColor?.name ? item.selectedColor.name.split(' ')[0] : 'Padrão'}
                       </p>
                       
                       {/* Price lines */}

@@ -10,8 +10,8 @@ interface ProductModalProps {
 
 export default function ProductModal({ product, onClose, onAddToCart }: ProductModalProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [selectedSize, setSelectedSize] = useState(product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Único');
+  const [selectedColor, setSelectedColor] = useState(product.colors && product.colors.length > 0 ? product.colors[0] : { name: 'Padrão', hex: '#ffffff' });
   const [quantity, setQuantity] = useState(1);
   const [isAddedSuccessfully, setIsAddedSuccessfully] = useState(false);
 
@@ -39,7 +39,7 @@ export default function ProductModal({ product, onClose, onAddToCart }: ProductM
   const getStockCount = () => {
     if (!product.inStock) return 0;
     let hash = 0;
-    const key = product.id + selectedSize + selectedColor.name;
+    const key = product.id + selectedSize + (selectedColor?.name || 'Padrão');
     for (let i = 0; i < key.length; i++) {
       hash = key.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -185,22 +185,22 @@ export default function ProductModal({ product, onClose, onAddToCart }: ProductM
             {/* 1. Color picker */}
             <div>
               <span className="block font-mono text-[9px] font-bold tracking-widest text-neutral-500 uppercase">
-                Selecione a Cor: <span className="text-white text-[10px] font-sans font-bold capitalize ml-1">{selectedColor.name}</span>
+                Selecione a Cor: <span className="text-white text-[10px] font-sans font-bold capitalize ml-1">{selectedColor?.name || 'Padrão'}</span>
               </span>
               <div className="mt-1.5 flex flex-wrap gap-2 animate-fade-in">
-                {product.colors.map((color, idx) => (
+                {product.colors?.map((color, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleColorSelect(color, idx)}
                     style={{ backgroundColor: color.hex }}
                     className={`h-7 w-7 rounded-full border transition-all cursor-pointer flex items-center justify-center ${
-                      selectedColor.name === color.name
+                      selectedColor?.name === color.name
                         ? 'border-white scale-110 ring-2 ring-white/40'
                         : 'border-neutral-800 hover:border-neutral-500'
                     }`}
                     title={color.name}
                   >
-                    {selectedColor.name === color.name && (
+                    {selectedColor?.name === color.name && (
                       <span className={`block h-1.5 w-1.5 rounded-full ${color.hex.toLowerCase() === '#ffffff' || color.hex.toLowerCase() === '#fafafa' ? 'bg-black' : 'bg-white'}`}></span>
                     )}
                   </button>
@@ -214,7 +214,7 @@ export default function ProductModal({ product, onClose, onAddToCart }: ProductM
                 Tamanho Selecionado: <span className="text-white text-[10px] font-mono font-bold ml-1">{selectedSize}</span>
               </span>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {product.sizes.map((size) => (
+                {product.sizes?.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}

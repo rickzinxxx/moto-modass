@@ -62,9 +62,11 @@ export default function App() {
 
   // --- Handlers ---
   const handleAddToCart = (product: Product, size: string, color: ColorOption, quantity: number) => {
+    const finalSize = size || 'Único';
+    const finalColor = color || { name: 'Padrão', hex: '#ffffff' };
     setCartItems((prev) => {
       // Craft a composite unique ID for tracking combinations of size and color in our shopping lists
-      const itemId = `${product.id}-${size}-${color.name}`;
+      const itemId = `${product.id}-${finalSize}-${finalColor.name || 'Padrão'}`;
       const existing = prev.find((item) => item.id === itemId);
 
       if (existing) {
@@ -73,7 +75,7 @@ export default function App() {
         );
       }
 
-      return [...prev, { id: itemId, product, selectedSize: size, selectedColor: color, quantity }];
+      return [...prev, { id: itemId, product, selectedSize: finalSize, selectedColor: finalColor, quantity }];
     });
   };
 
