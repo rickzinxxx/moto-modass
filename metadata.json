@@ -1,0 +1,6 @@
+{
+  "name": "JM Mota Modas",
+  "description": "Catálogo virtual premium de vestuário e acessórios para escolher e enviar pedidos diretamente via WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
