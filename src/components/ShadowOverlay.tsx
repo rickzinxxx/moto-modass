@@ -1,4 +1,4 @@
-import React, { useRef, useId, useEffect, CSSProperties } from 'react';
+import React, { useRef, useId, useEffect, useState, CSSProperties } from 'react';
 import { animate, useMotionValue, AnimationPlaybackControls } from 'framer-motion';
 
 // Type definitions
@@ -63,7 +63,17 @@ export function ShadowOverlay({
     children
 }: ShadowOverlayProps) {
     const id = useInstanceId();
-    const animationEnabled = animation && animation.scale > 0;
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = window.matchMedia('(pointer: coarse)').matches || 
+                            ('ontouchstart' in window) || 
+                            (navigator.maxTouchPoints > 0);
+        setIsTouchDevice(checkMobile);
+    }, []);
+
+    // Disable SVG animation & SVG filter processing completely on touch-capable (mobile/tablet) devices
+    const animationEnabled = !isTouchDevice && animation && animation.scale > 0;
     const feColorMatrixRef = useRef<SVGFEColorMatrixElement>(null);
     const hueRotateMotionValue = useMotionValue(180);
     const hueRotateAnimation = useRef<AnimationPlaybackControls | null>(null);
@@ -111,11 +121,26 @@ export function ShadowOverlay({
                 ...style
             }}
         >
+            {/* Inject a lightweight, hardware-accelerated style sheet for smooth mobile floating */}
+            {isTouchDevice && (
+                <style dangerouslySetInnerHTML={{__html: `
+                    @keyframes mobileFloatShadow {
+                        0% { transform: scale(1) rotate(0deg) translate3d(0, 0, 0); }
+                        50% { transform: scale(1.1) rotate(4deg) translate3d(10px, -20px, 0); }
+                        100% { transform: scale(0.95) rotate(-4deg) translate3d(-10px, 20px, 0); }
+                    }
+                `}} />
+            )}
             <div
                 style={{
                     position: "absolute",
-                    inset: -displacementScale,
-                    filter: animationEnabled ? `url(#${id}) blur(4px)` : "none"
+                    inset: isTouchDevice ? "-10%" : -displacementScale,
+                    filter: animationEnabled ? `url(#${id}) blur(4px)` : "blur(40px)",
+                    opacity: isTouchDevice ? 0.6 : 1,
+                    width: isTouchDevice ? "120%" : "100%",
+                    height: isTouchDevice ? "120%" : "100%",
+                    animation: isTouchDevice ? "mobileFloatShadow 30s ease-in-out infinite alternate" : "none",
+                    willChange: isTouchDevice ? "transform" : "auto",
                 }}
             >
                 {animationEnabled && (

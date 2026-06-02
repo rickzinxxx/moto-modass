@@ -36,6 +36,16 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
   }, []);
 
   useEffect(() => {
+    if (!isHovered) {
+      if (circleRef.current) {
+        circleRef.current.style.transform = "";
+      }
+      if (innerTextRef.current) {
+        innerTextRef.current.style.transform = "";
+      }
+      return;
+    }
+
     const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
 
     const animate = () => {
@@ -57,7 +67,7 @@ export function MagneticText({ text = "CREATIVE", hoverText = "EXPLORE", classNa
     return () => {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, []);
+  }, [isHovered]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
