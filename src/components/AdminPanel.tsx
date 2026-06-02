@@ -296,11 +296,10 @@ export default function AdminPanel({ isOpen, onClose, products, onUpdateProducts
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in font-mono overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-black/85 backdrop-blur-md animate-fade-in font-mono overflow-y-auto">
       <div 
         id="admin-panel-container"
-        className="relative w-full max-w-5xl bg-[#0e0e0e] border border-neutral-850 rounded-2xl shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col my-8"
-        style={{ maxHeight: '90vh' }}
+        className="relative w-full h-full md:h-auto md:max-h-[90vh] md:max-w-5xl bg-[#0e0e0e] border-0 md:border md:border-neutral-850 rounded-none md:rounded-2xl shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col my-0 md:my-8"
       >
         {/* Header Rail */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-900 bg-neutral-950">
@@ -372,7 +371,7 @@ export default function AdminPanel({ isOpen, onClose, products, onUpdateProducts
           <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
             
             {/* LEFT SIDE: Products selection list */}
-            <div className="w-full md:w-5/12 border-r border-neutral-900 flex flex-col overflow-y-auto bg-neutral-950/20">
+            <div className={`w-full md:w-5/12 border-r border-neutral-900 flex flex-col overflow-y-auto bg-neutral-950/20 ${editingProduct || isCreatingNew ? 'hidden md:flex' : 'flex'}`}>
               
               <div className="p-4 border-b border-neutral-900 bg-neutral-950/80 sticky top-0 z-10 space-y-3">
                 <div className="flex items-center justify-between">
@@ -478,15 +477,28 @@ export default function AdminPanel({ isOpen, onClose, products, onUpdateProducts
             </div>
 
             {/* RIGHT SIDE: Dedicated Product Editor/Creator Form */}
-            <div className="flex-1 overflow-y-auto p-6 bg-[#0c0c0c] flex flex-col justify-between">
+            <div className={`flex-1 overflow-y-auto p-4 md:p-6 bg-[#0c0c0c] flex flex-col justify-between ${editingProduct || isCreatingNew ? 'flex' : 'hidden md:flex'}`}>
               
               {editingProduct || isCreatingNew ? (
                 <form onSubmit={handleSaveProduct} className="space-y-5">
-                  <div className="flex items-center justify-between border-b border-neutral-900 pb-3">
-                    <h3 className="text-[11px] font-black tracking-widest text-white uppercase">
-                      {isCreatingNew ? 'CRIAR NEW PRODUTO' : 'EDITANDO PEÇA'}
-                    </h3>
-                    <div className="text-[9px] bg-neutral-900 text-neutral-400 px-2 py-0.5 rounded font-mono">
+                  <div className="flex items-center justify-between border-b border-neutral-900 pb-3 gap-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingProduct(null);
+                          setIsCreatingNew(false);
+                        }}
+                        className="md:hidden flex items-center gap-1 text-white hover:text-neutral-350 text-[10px] uppercase font-black bg-neutral-900 px-2.5 py-1.5 rounded-lg border border-neutral-800"
+                        title="Voltar ao catálogo"
+                      >
+                        ← Voltar
+                      </button>
+                      <h3 className="text-[10px] md:text-[11px] font-black tracking-widest text-white uppercase">
+                        {isCreatingNew ? 'CRIAR NOVO' : 'EDITANDO PEÇA'}
+                      </h3>
+                    </div>
+                    <div className="text-[9px] bg-neutral-900 text-neutral-400 px-2 py-0.5 rounded font-mono truncate max-w-[120px] md:max-w-none text-right">
                       ID: {formId}
                     </div>
                   </div>

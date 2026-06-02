@@ -42,6 +42,19 @@ const GlowCard: React.FC<GlowCardProps> = ({
   const innerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Detect touch-capable devices to immediately skip document pointer tracking
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isTouch) {
+      if (cardRef.current) {
+        // Set an elegant static glow highlight on touch/mobile screens with zero passive CPU footprint
+        cardRef.current.style.setProperty('--x', '150');
+        cardRef.current.style.setProperty('--xp', '0.5');
+        cardRef.current.style.setProperty('--y', '150');
+        cardRef.current.style.setProperty('--yp', '0.5');
+      }
+      return;
+    }
+
     const syncPointer = (e: PointerEvent) => {
       const { clientX: x, clientY: y } = e;
       
