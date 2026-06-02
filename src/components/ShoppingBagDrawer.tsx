@@ -38,7 +38,7 @@ export default function ShoppingBagDrawer({
   if (!isOpen) return null;
 
   // Calculators
-  const subtotal = cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + (item.product?.price ?? 0) * (item.quantity ?? 0), 0);
   const totalPix = paymentMethod === 'Pix' ? subtotal * 0.95 : subtotal;
 
   const formattedSubtotal = new Intl.NumberFormat('pt-BR', {
@@ -75,16 +75,19 @@ export default function ShoppingBagDrawer({
     message += `📦 *ITENS COMPRADOS:* \n\n`;
 
     cartItems.forEach((item, index) => {
-      const itemTotal = item.product.price * item.quantity;
+      const productPrice = item.product?.price ?? 0;
+      const productName = item.product?.name ?? 'Peça do Catálogo';
+      const productBrand = item.product?.brand ?? 'JM MOTA';
+      const itemTotal = productPrice * item.quantity;
       const formattedItemTotal = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
       }).format(itemTotal);
 
-      message += `*${index + 1}. ${item.product.name}*\n`;
-      message += `   • Marca: ${item.product.brand}\n`;
+      message += `*${index + 1}. ${productName}*\n`;
+      message += `   • Marca: ${productBrand}\n`;
       message += `   • Tam: ${item.selectedSize || 'Único'} | Cor: ${item.selectedColor?.name || 'Padrão'}\n`;
-      message += `   • Qtd: ${item.quantity}x de R$ ${item.product.price.toFixed(2)}\n`;
+      message += `   • Qtd: ${item.quantity}x de R$ ${productPrice.toFixed(2)}\n`;
       message += `   • Valor: ${formattedItemTotal}\n\n`;
     });
 
@@ -161,7 +164,7 @@ export default function ShoppingBagDrawer({
                   >
                     {/* Thumbnail */}
                     <img
-                      src={item.product.images[0]}
+                      src={item.product?.images?.[0] || 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=600&auto=format&fit=crop'}
                       alt=""
                       referrerPolicy="no-referrer"
                       className="h-16 w-12 object-cover border border-neutral-900 bg-neutral-950 rounded"
@@ -170,10 +173,10 @@ export default function ShoppingBagDrawer({
                     {/* Metadata details */}
                     <div className="flex-1 min-w-0 text-left">
                       <span className="font-mono text-[8px] text-neutral-400 font-bold leading-none block uppercase">
-                        {item.product.brand}
+                        {item.product?.brand || 'JM MOTA'}
                       </span>
                       <h4 className="mt-1 font-mono text-[11px] font-bold text-white truncate uppercase">
-                        {item.product.name}
+                        {item.product?.name || 'Peça'}
                       </h4>
                       <p className="mt-1 font-mono text-[9px] text-neutral-400 uppercase">
                         Tam: {item.selectedSize || 'Único'} | Cor: {item.selectedColor?.name ? item.selectedColor.name.split(' ')[0] : 'Padrão'}
@@ -181,7 +184,7 @@ export default function ShoppingBagDrawer({
                       
                       {/* Price lines */}
                       <span className="block font-mono text-[11px] text-white font-bold mt-1.5">
-                        R$ {(item.product.price * item.quantity).toFixed(2)}
+                        R$ {((item.product?.price ?? 0) * item.quantity).toFixed(2)}
                       </span>
                     </div>
 

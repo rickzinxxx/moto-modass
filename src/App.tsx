@@ -77,6 +77,11 @@ export default function App() {
 
       return [...prev, { id: itemId, product, selectedSize: finalSize, selectedColor: finalColor, quantity }];
     });
+
+    // Elegant delayed trigger to open the sliding bag drawer just as the product details modal finishes closing
+    setTimeout(() => {
+      setIsCartOpen(true);
+    }, 1250);
   };
 
   const handleUpdateCartQuantity = (id: string, delta: number) => {
@@ -322,7 +327,7 @@ export default function App() {
                 </span>
               </a>
 
-              {/* @rickzinx site creator */}
+              {/* @rickzinxx_ site creator */}
               <a
                 href={`https://instagram.com/${SITE_CREATOR.replace('@', '')}`}
                 target="_blank"
@@ -395,7 +400,7 @@ export default function App() {
             </button>
           </span>
           <span className="uppercase">
-            PROJETADO POR <span className="text-neutral-500 font-bold">@rickzinx_</span> • PARCERIA ECOS & TECHIFY
+            PROJETADO POR <span className="text-neutral-500 font-bold">@rickzinxx_</span> • PARCERIA ECOS & TECHIFY
           </span>
         </div>
       </footer>

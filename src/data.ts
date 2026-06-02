@@ -3,7 +3,7 @@ import { Product } from './types';
 export const STORE_WHATSAPP = '5581985555951'; // Oficial phone number formatted with international code (Brazil +55, DDD +81, Number)
 export const STORE_NAME = 'JM MOTA MODAS';
 export const STORE_INSTAGRAM = '@jm_mmota';
-export const SITE_CREATOR = '@rickzinx_';
+export const SITE_CREATOR = '@rickzinxx_';
 export const STORE_ADDRESS = 'Avenida Antonio Jacome Bezerra, N: 9 C, Jaboatão dos Guararapes - PE, CEP: 54220-240';
 
 export const PRODUCTS: Product[] = [

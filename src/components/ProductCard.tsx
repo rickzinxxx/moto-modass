@@ -74,15 +74,17 @@ export default function ProductCard({ product, onOpenDetails }: ProductCardProps
           <div className="flex items-center justify-between">
             {/* Color circles */}
             <div className="flex items-center gap-1.5">
-              {product.colors.slice(0, 3).map((col, index) => (
-                <span
-                  key={index}
-                  style={{ backgroundColor: col.hex }}
-                  className="h-2.5 w-2.5 rounded-full border border-neutral-800"
-                  title={col.name}
-                ></span>
-              ))}
-              {product.colors.length > 3 && (
+              {product.colors && Array.isArray(product.colors) ? (
+                product.colors.slice(0, 3).map((col, index) => (
+                  <span
+                    key={index}
+                    style={{ backgroundColor: col.hex }}
+                    className="h-2.5 w-2.5 rounded-full border border-neutral-800"
+                    title={col.name}
+                  ></span>
+                ))
+              ) : null}
+              {product.colors && product.colors.length > 3 && (
                 <span className="font-mono text-[8px] text-neutral-500 font-bold">
                   +{product.colors.length - 3}
                 </span>
@@ -91,12 +93,14 @@ export default function ProductCard({ product, onOpenDetails }: ProductCardProps
 
             {/* Sizes badge preview */}
             <div className="flex items-center gap-1 font-mono text-[9px] text-neutral-400">
-              {product.sizes.slice(0, 3).map((sz, index) => (
-                <span key={index} className="bg-neutral-900 px-1.5 py-0.5 border border-neutral-800 rounded">
-                  {sz}
-                </span>
-              ))}
-              {product.sizes.length > 3 && <span>...</span>}
+              {product.sizes && Array.isArray(product.sizes) ? (
+                product.sizes.slice(0, 3).map((sz, index) => (
+                  <span key={index} className="bg-neutral-900 px-1.5 py-0.5 border border-neutral-800 rounded">
+                    {sz}
+                  </span>
+                ))
+              ) : null}
+              {product.sizes && product.sizes.length > 3 && <span>...</span>}
             </div>
           </div>
 
